@@ -1,5 +1,6 @@
 let CMS = require('./sdk/cms');
 let DataBase= require('./class/database');
+require('datejs')
 
 async function createCMS(option)
 {

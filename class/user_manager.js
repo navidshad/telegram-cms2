@@ -3,7 +3,15 @@ let User = require('./user');
 class UserManager {
     static async create(botUsername, detail)
     {
-        let newUser = await new global.db.user(detail).save().then();
+        let baseDetail = {
+            sections    : [],
+            date        : Date.today(),
+            botUsername : botUsername,
+        };
+
+        let newUser = await new global.db.user(Object.assign(baseDetail, detail))
+            .save().then();
+        
         return new User(newUser);
     }
 

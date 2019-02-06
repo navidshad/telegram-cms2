@@ -10,7 +10,7 @@ module.exports = class User
 
     get detail()    { return this._dbObject; };
     get sections()  { return this.detail.sections; };
-    get userid()    { return this.detail.id; }
+    get id()    { return this.detail.id; }
 
     addSection(section)
     {

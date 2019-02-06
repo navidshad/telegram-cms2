@@ -22,11 +22,11 @@ module.exports = class CMS
         // activate modules
         this._moduleStatus = detail['moduleStatus'];
 
-        // must be declear first
-        this.eventEmitter = new events.EventEmitter();
+        // administrators
+        this._adminMembers = detail.admins;
 
-        // a list of functions wich being performed affter started the bot.
-        this._afterStart = [];
+        // default language
+        this.lang = detail.defaulLanguage;
 
         // create
         this._create();
@@ -41,13 +41,13 @@ module.exports = class CMS
         this.me = await this._bot.getMe();
 
         // add listeners
-        //Message
+        // Message
         this._bot.on('message', (msg) => {
             //console.log(msg.text);
             this._bot.sendChatAction(msg.chat.id, 'typing');
         });
 
-        //text
+        // text
         this._bot.on('text', (msg) => 
         {
             // get user
@@ -55,11 +55,23 @@ module.exports = class CMS
 
             routingText(this, user, msg);
         });
-
-        this._bot.onText(/\/start/, (msg) => 
+        
+        // commands
+        this._bot.onText(/\//, (msg) => 
         {
             routingCommand.route(this, msg);
         });
+    }
+
+    isAdminThisUser(userid)
+    {
+        let isAdmin = false;
+
+        this._adminMembers.forEach(id => {
+            if(id == userid) isAdmin = true;
+        });
+
+        return isAdmin;
     }
 
     // save load ==========================================

@@ -16,13 +16,7 @@ async function startBot(cms, message)
 
     // create user if not exist
     if(user == null) 
-    { 
-        user = await UserManager.create(
-            cms.me.username, Object.assign(
-                {
-
-                }, message.from));
-    }
+        user = await UserManager.create(cms.me.username, message.from);
 
     // go to main menu
     router_menu.goToMainMenu(cms, user);

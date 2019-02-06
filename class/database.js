@@ -24,6 +24,11 @@ async function createDatabase(stringConnection)
       date        : Date,
       botUsername : String,
   });
+
+  let adminPermission = new Schema({
+    userid: Number,
+    list: {type: [String], default: []},
+  });
   
   let ConfigSchema = new Schema({
     username      : String,
