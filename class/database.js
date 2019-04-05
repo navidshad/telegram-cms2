@@ -55,7 +55,28 @@ async function createDatabase(stringConnection)
   modules.lastMess = _mongoose.model('lastMessages', lastMessageSchema);
 
   console.log('database connected.')
-  return modules;
+  return new DatBase(modules);
+}
+
+class DatBase 
+{
+  constructor (models){
+    this._models = models;
+  }
+
+  addModel (name, model)
+  {
+    if(!model.hasOwnProperty(name))
+      this._models[name] = model;
+    else Console.error(`the collection of ${name} has already added`);
+  }
+
+  collection(name)
+  {
+    if(this._models.hasOwnProperty(name))
+      return this._models[name];
+    else console.error(`the collection of ${name} doesn't exist`);
+  }
 }
 
 module.exports = createDatabase;

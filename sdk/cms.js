@@ -5,9 +5,17 @@ let DataBase = require('../class/database');
 let routingText = require('./routers/text_router');
 let routingCommand = require('./routers/command_router');
 
+
 /*
-    cms bot should have a light object in terms of memory
-    and all modules shoud be seperated system that each cms would have collaboration with.
+    -   cms bot should have a light object in terms of memory
+        and all modules shoud be a seperated system that each cms would have a collaboration with.
+
+    -   each cms simple properties [token, bot user, bot object, moduleStatus, adminList, default lang]. 
+        and this data will be accessed in all module's aspect.
+
+    -   each cms registers some events to get telegram's message and pass it to routers.
+    -   routers analyzes messages and send back a result message to telegram.
+
 */
 module.exports = class CMS
 {
@@ -37,7 +45,7 @@ module.exports = class CMS
         // create bot
         this._bot = new telegramBot(this._token, {polling: true});
 
-        // user detail of bot
+        // get detail of bot
         this.me = await this._bot.getMe();
 
         // add listeners
@@ -48,12 +56,9 @@ module.exports = class CMS
         });
 
         // text
-        this._bot.on('text', (msg) => 
+        this._bot.on('text', async (msg) => 
         {
-            // get user
-            let user;
-
-            routingText(this, user, msg);
+            routingText(this, msg);
         });
         
         // commands

@@ -1,4 +1,4 @@
-let User = require('./user');
+let User = require('../class/user');
 
 class UserManager {
     static async create(botUsername, detail)
@@ -17,7 +17,7 @@ class UserManager {
 
     static async get(botUsername, userid)
     {
-        let _user = await global.db.user.findOne({'_id': userid}).exec().then();
+        let _user = await global.db.user.findOne({'id': userid, 'botUsername': botUsername}).exec().then();
 
         if(_user != null) return new User(_user);
         else return null;

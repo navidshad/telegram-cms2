@@ -1,6 +1,7 @@
+require('datejs');
 let CMS = require('./sdk/cms');
-let DataBase= require('./class/database');
-require('datejs')
+let DataBase = require('./class/database');
+let PluginService = require('./service/plugin_service');
 
 async function createCMS(option)
 {
@@ -9,8 +10,15 @@ async function createCMS(option)
     //     'administrator' : 654654,
     // }
 
+    // get approot path
+    global.appRoot = __dirname;
+
     // connect to db
-    global.db = await DataBase(option.mongo);
+    global.database = await DataBase(option.mongo);
+
+    // luanch modules
+    global.plugins = new PluginService({});
+    await global.plugins.settingUp().then();
 
     // luanch cms
     let newCMSbot = new CMS(option);

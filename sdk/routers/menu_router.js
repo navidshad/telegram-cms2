@@ -1,5 +1,16 @@
 let Keyboard = require('./../../class/keyboard');
-let StrService = require('./../../class/string_service/string_service');
+let Language = require('../../service/language_service');
+
+/*
+    -   this is a router for user side of the cms.
+    -   methods:
+    -   route:  this is a the main method being called through other routers.
+                it should analyzes message and navigate the use into a menu.
+
+    -   openMenu: it will navigate a user into a menu.
+
+    -   goToMainMenu: it is a shortcut for going into the main menu.
+*/
 
 async function route(cms, user, message)
 {
@@ -13,7 +24,7 @@ async function goToMainMenu(cms, user)
 
     // admin option
     if(cms.isAdminThisUser(user.id))
-        keyboardOptions.buttomRow = [StrService.getStr('sys', cms.lang, 'gotoAdmin')];
+        keyboardOptions.buttomRow = [Language.getStr('system', cms.lang, 'gotoAdmin')];
 
     // messageOptions
     let messageOptions = {

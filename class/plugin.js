@@ -1,41 +1,54 @@
+let languageService = require('../service/language_service');
+
 module.exports = class Plugin 
 {
-    constructor (detail)
+    constructor (options)
     {
-        if(detail['name']) this.name = detail['name'];
+        if(options['name']) this.name = options['name'];
         else {
-            console.log('found a plugin without name');
+            console.error('found a plugin without name');
             return;
         }
         
-        // setup route buttons
-        if(detail['adminSectionButtons'])
-            this._adminSectionBtns = detail['adminSectionButtons'];
+        // get admin section buttons
+        if(options.hasOwnProperty('adminButtonLables'))
+            this._adminBtns = options['adminButtonLables'];
         
-        if(detail['userSectionButtons'])
-            this._userSectionBtns = detail['userSectionButtons'];
+        // get user  buttons
+        if(options.hasOwnProperty('userButtonLables'))
+            this._userBtns = options['userButtonLables'];
 
-        // setup routers
-        if(detail['adminSectionRouter'])
-            this._adminSectionRouter = detail['adminSectionRouter'];
-        
-        if(detail['userSectionRouter'])
-            this._userSectionRouter = detail['userSectionRouter'];
-    }
+        // get admin route function
+        if(options.hasOwnProperty('adminRouter'))
+            this._adminRouter = options['adminRouter'];
 
-    checkAdminSectionRoute (routeOption)
-    {
-        return this._checkRoute(this._adminSectionBtns, 'admin', routeOption);
-    }
+        // get user route function
+        if(options.hasOwnProperty('userRouter'))
+            this._userRouter = options['userRouter'];
 
-    checkUserSectionRoute (routeOption)
-    {
-        return this._checkRoute(this._userSectionBtns, 'user', routeOption);
+        // get admin setting options of this plugin
+        if(options.hasOwnProperty('settingOptions'))
+            this._settingOptions = options['settingOptions'];
+
+        // get language string package
+        if(options.hasOwnProperty('languageStringPackage'))
+            languageService.addPackage(this.name, options['languageStringPackage']);
+
+        // get db models
+        if(options.hasOwnProperty('mongooseModels'))
+        {
+            let keys = Object.keys(options['mongooseModels']);
+
+            keys.forEach(key => {
+                let model = options['mongooseModels'][key];
+                global.database.addModel(key, model);
+            });
+        }
     }
 
     _checkRoute (btnsArr, section, option)
     {
-        let result = {}
+        let result = { status: false };
         
         let router;
         if(section == 'admin') router = this._adminSectionRouter;
@@ -47,8 +60,8 @@ module.exports = class Plugin
             if(option.text === btn) 
             {
                 result.status = true; 
-                result.button = btn;
-                result.routting = router;
+                result.buttons = btn;
+                result.route = router;
             }
         });
     
@@ -61,8 +74,8 @@ module.exports = class Plugin
                 { 
                     if(section === btn){
                         result.status = true; 
-                        result.button = btn;
-                        result.routting = router;
+                        result.buttons = btn;
+                        result.route = router;
                     }
                 });
             });
@@ -72,7 +85,17 @@ module.exports = class Plugin
         return result;
     }
 
-    getButtons (mName)
+    checkAdminSectionRoute (routeOption)
+    {
+        return this._checkRoute(this._adminSectionBtns, 'admin', routeOption);
+    }
+
+    checkUserSectionRoute (routeOption)
+    {
+        return this._checkRoute(this._userSectionBtns, 'user', routeOption);
+    }
+
+    getButtons ()
     {
         // var buttons  = fn.convertObjectToArray(fn.mstr[mName].btns_user,{});
         // return buttons;
